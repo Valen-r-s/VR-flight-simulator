@@ -1069,11 +1069,11 @@ MonoBehaviour:
       - m_Target: {fileID: 1054172056}
         m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
         m_MethodName: ChangeScene
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1903,7 +1903,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ac54d13a837c84399f452e7ae30677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneIndex: 1
 --- !u!4 &1054172057
 Transform:
   m_ObjectHideFlags: 0
