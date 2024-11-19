@@ -4,6 +4,7 @@ public class FlightController : MonoBehaviour
 {
     public Transform joystick; // Asigna el joystick desde el inspector
     public float sensitivity = 10f; // Sensibilidad del control
+    public float forwardSpeed = 20f; // Velocidad constante hacia adelante
 
     private void Update()
     {
@@ -18,7 +19,10 @@ public class FlightController : MonoBehaviour
         // Invierte el movimiento de pitch (subir/bajar)
         pitch = -pitch;
 
-        // Aplica la rotación al avión, lo que moverá también la cámara y el joystick
+        // Aplica la rotación al avión (dirección de vuelo)
         transform.Rotate(pitch * sensitivity * Time.deltaTime, 0, -roll * sensitivity * Time.deltaTime);
+
+        // Mueve el avión hacia adelante según su orientación
+        transform.position += transform.forward * forwardSpeed * Time.deltaTime;
     }
 }
