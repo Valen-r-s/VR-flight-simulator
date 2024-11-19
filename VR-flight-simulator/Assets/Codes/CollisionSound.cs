@@ -6,7 +6,6 @@ public class CollisionSound : MonoBehaviour
 
     void Start()
     {
-        // Obtén el componente AudioSource
         audioSource = GetComponent<AudioSource>();
     }
 

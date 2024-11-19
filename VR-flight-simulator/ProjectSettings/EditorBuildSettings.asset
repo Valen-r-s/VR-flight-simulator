@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Juego.unity
     guid: 50333eae1d3f75d41908dbb9ce34eeb3
   - enabled: 1
-    path: Assets/Scenes/Score.unity
-    guid: 412bf20a2a7df084ba3621ba0096dd57
-  - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: 92753950609173847bd2a4c1b987cff2
   m_configObjects:
