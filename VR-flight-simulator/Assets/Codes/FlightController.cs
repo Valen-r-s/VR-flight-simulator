@@ -1,28 +1,65 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FlightController : MonoBehaviour
 {
-    public Transform joystick; // Asigna el joystick desde el inspector
-    public float sensitivity = 10f; // Sensibilidad del control
-    public float forwardSpeed = 20f; // Velocidad constante hacia adelante
+    [Header("Referencias")]
+    public Transform joystick; // Referencia al objeto del joystick
+    public Transform airplane; // Referencia al objeto del avión
 
-    private void Update()
+    [Header("Ajustes de Sensibilidad")]
+    public float pitchSensitivity = 20f; // Sensibilidad para el movimiento hacia adelante y atrás (inclinación)
+    public float rollSensitivity = 15f; // Sensibilidad para el movimiento de giro (izquierda y derecha)
+    public float movementSpeed = 10f; // Velocidad de avance del avión
+    public float maxAngle = 30f; // Ángulo máximo de inclinación permitido
+
+    private Quaternion initialJoystickRotation; // Rotación inicial del joystick para referencia
+
+    void Start()
     {
-        // Captura la rotación del joystick
-        float pitch = joystick.localRotation.eulerAngles.x;
-        float roll = joystick.localRotation.eulerAngles.z;
+        // Guarda la rotación inicial del joystick
+        if (joystick != null)
+        {
+            initialJoystickRotation = joystick.localRotation;
+        }
+    }
 
-        // Ajusta el pitch y roll para que vayan en el rango de -180 a 180
-        if (pitch > 180) pitch -= 360;
-        if (roll > 180) roll -= 360;
+    void Update()
+    {
+        if (joystick != null && airplane != null)
+        {
+            // Calcula la desviación del joystick respecto a su rotación inicial
+            Quaternion rotationDelta = joystick.localRotation * Quaternion.Inverse(initialJoystickRotation);
 
-        // Invierte el movimiento de pitch (subir/bajar)
-        pitch = -pitch;
+            // Convierte la rotación en ángulos
+            Vector3 rotationAngles = rotationDelta.eulerAngles;
 
-        // Aplica la rotación al avión (dirección de vuelo)
-        transform.Rotate(pitch * sensitivity * Time.deltaTime, 0, -roll * sensitivity * Time.deltaTime);
+            // Normaliza los ángulos para que estén en el rango [-180, 180]
+            float pitch = NormalizeAngle(rotationAngles.x); // Movimiento adelante/atrás
+            float roll = NormalizeAngle(rotationAngles.z); // Movimiento izquierda/derecha
 
-        // Mueve el avión hacia adelante según su orientación
-        transform.position += transform.forward * forwardSpeed * Time.deltaTime;
+            // Limita los ángulos máximos de inclinación
+            pitch = Mathf.Clamp(pitch, -maxAngle, maxAngle);
+            roll = Mathf.Clamp(roll, -maxAngle, maxAngle);
+
+            // Calcula los movimientos del avión basados en el joystick
+            float pitchMovement = pitch / maxAngle * pitchSensitivity; // Movimiento vertical
+            float rollMovement = roll / maxAngle * rollSensitivity; // Movimiento horizontal
+
+            // Aplica las rotaciones al avión
+            airplane.Rotate(Vector3.right, pitchMovement * Time.deltaTime); // Inclina adelante/atrás
+            airplane.Rotate(Vector3.forward, rollMovement * Time.deltaTime); // Corrige el giro horizontal
+
+            // Mueve el avión hacia adelante
+            airplane.Translate(Vector3.forward * movementSpeed * Time.deltaTime);
+        }
+    }
+
+    // Función para normalizar ángulos
+    private float NormalizeAngle(float angle)
+    {
+        if (angle > 180) angle -= 360;
+        return angle;
     }
 }

@@ -20,7 +20,7 @@ public class CollisionHandler : MonoBehaviour
 
     private void Start()
     {
-        startTime = Time.time; 
+        startTime = Time.time;
         isTransitioning = false;
         lives = 3;
     }
@@ -49,8 +49,43 @@ public class CollisionHandler : MonoBehaviour
         if (other.CompareTag("Obstacle") && !isTransitioning)
         {
             LoseLife();
+
+            // Ocultar el obstáculo desactivando el Renderer
+            Renderer obstacleRenderer = other.GetComponent<Renderer>();
+            if (obstacleRenderer != null)
+            {
+                obstacleRenderer.enabled = false; // Oculta el objeto
+            }
+
+            // Opcional: Desactivar todos los Renderers hijos, si el obstáculo tiene varios componentes visibles
+            foreach (Renderer childRenderer in other.GetComponentsInChildren<Renderer>())
+            {
+                childRenderer.enabled = false;
+            }
+
+            // Desactiva completamente el objeto después
+            other.gameObject.SetActive(false);
+        }
+
+        if (other.CompareTag("Border") && !isTransitioning)
+        {
+            LoseAllLives();
         }
     }
+
+    private void LoseAllLives()
+    {
+        // Poner todas las vidas a cero
+        for (int i = lives - 1; i >= 0; i--)
+        {
+            lifeImages[i].sprite = explosionSprite; // Actualizar las imágenes de vida
+        }
+        lives = 0;
+
+        // Activar el Game Over
+        GameOver();
+    }
+
 
     void LoseLife()
     {
